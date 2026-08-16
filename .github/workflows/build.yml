@@ -14,7 +14,7 @@ jobs:
       - name: Install Dependencies & Azule
         run: |
           brew install dpkg ldid
-          git clone https://github.com/Al務/Azule.git $HOME/Azule
+          git clone https://github.com/Al423/Azule.git $HOME/Azule
           echo "$HOME/Azule" >> $GITHUB_PATH
 
       - name: Download IPA
