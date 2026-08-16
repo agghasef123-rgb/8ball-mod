@@ -13,15 +13,17 @@ jobs:
 
       - name: Setup Theos
         run: |
-          git clone --recursive https://github.com/theos/theos.git ~/theos
+          git clone --recursive https://github.com/theos/theos.git $HOME/theos
+          echo "THEOS=$HOME/theos" >> $GITHUB_ENV
 
       - name: Build Dylib
         run: |
-          export THEOS=~/theos
-          make clean package FinalPackage=1
+          make clean package FINALPACKAGE=1
 
       - name: Upload Dylib Artifact
         uses: actions/upload-artifact@v4
         with:
           name: 8BallMod-Dylib
-          path: packages/*.deb
+          path: |
+            packages/*.deb
+            .theos/obj/*.dylib
