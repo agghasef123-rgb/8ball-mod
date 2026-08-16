@@ -9,7 +9,7 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Theos
         run: |
@@ -21,7 +21,7 @@ jobs:
           make clean package FinalPackage=1
 
       - name: Upload Dylib Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: 8BallMod-Dylib
           path: packages/*.deb
