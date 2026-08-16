@@ -11,13 +11,17 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Install Dependencies & insert_dylib
+      - name: Install Dependencies
         run: |
           brew install dpkg ldid
-          git clone https://github.com/tytydr/insert_dylib.git
-          cd insert_dylib
-          xcodebuild
-          sudo cp build/Release/insert_dylib /usr/local/bin/
+          curl -LO https://github.com/tytydr/insert_dylib/releases/download/v1.0.0/insert_dylib || true
+          if [ ! -f insert_dylib ]; then
+            git clone https://github.com/tytydr/insert_dylib.git
+            cd insert_dylib && xcodebuild -quiet && sudo cp build/Release/insert_dylib /usr/local/bin/ && cd ..
+          else
+            chmod +x insert_dylib
+            sudo mv insert_dylib /usr/local/bin/
+          fi
 
       - name: Download IPA
         run: |
