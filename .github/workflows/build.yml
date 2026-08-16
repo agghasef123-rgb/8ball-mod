@@ -11,9 +11,13 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Install Dependencies
+      - name: Install Dependencies & Setup insert_dylib
         run: |
-          brew install dpkg ldid insert_dylib
+          brew install dpkg ldid
+          curl -LO https://raw.githubusercontent.com/Tyilo/insert_dylib/master/insert_dylib/main.c
+          clang -O2 -o insert_dylib main.c
+          sudo mv insert_dylib /usr/local/bin/
+          rm main.c
 
       - name: Download IPA
         run: |
