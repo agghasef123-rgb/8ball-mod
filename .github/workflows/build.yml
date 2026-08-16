@@ -1,4 +1,4 @@
-name: Build and Inject dylib
+name: Build and Inject dylib into IPA
 
 on:
   workflow_dispatch:
@@ -11,9 +11,15 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Install Dependencies
+      - name: Install Dependencies & Azule
         run: |
           brew install dpkg ldid
+          git clone https://github.com/Al務/Azule.git $HOME/Azule
+          echo "$HOME/Azule" >> $GITHUB_PATH
+
+      - name: Download IPA
+        run: |
+          curl -L "https://files.catbox.moe/4rf15n.ipa" -o app.ipa
 
       - name: Setup Theos & SDKs
         run: |
@@ -22,16 +28,18 @@ jobs:
           unzip -q master.zip
           mv sdks-master/* $HOME/theos/sdks/
           rm -rf master.zip sdks-master
-          echo "THEOS=$HOME/theos" >> $GITHUB_ENV
 
       - name: Build Dylib
         run: |
           make clean package FINALPACKAGE=1 THEOS=$HOME/theos
 
-      - name: Upload Dylib Artifact
+      - name: Inject Dylib into IPA
+        run: |
+          DYLIB_PATH=$(find .theos/obj -name "*.dylib" | head -n 1)
+          azule -i app.ipa -o output -f "$DYLIB_PATH" -n 8BallPool-Modded
+
+      - name: Upload Modded IPA
         uses: actions/upload-artifact@v4
         with:
-          name: 8BallMod-Dylib
-          path: |
-            packages/*.deb
-            .theos/obj/*.dylib
+          name: 8BallPool-Injected-IPA
+          path: output/*.ipa
