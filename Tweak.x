@@ -9,7 +9,13 @@ typedef struct {
     BOOL isSolid;
 } PoolBall;
 
-// 2. Hook لمكالمة تحديث الفيزياء ورسم مسارات الكرات
+// 2. تعريف واجهة الكلاس ليفهمها المترجم (Interface)
+@interface PhysicsEngineClass : NSObject
+- (PoolBall *)getBallDataAtIndex:(int)index;
+- (void)drawTrajectoryLineForBall:(PoolBall *)ball withPower:(float)power showBounce:(BOOL)showBounce;
+@end
+
+// 3. Hook لمكالمة تحديث الفيزياء ورسم مسارات الكرات
 %hook PhysicsEngineClass
 
 - (void)updatePhysicsAndDrawLines:(void *)ballsArray force:(float)hitForce angle:(float)hitAngle {
@@ -22,15 +28,15 @@ typedef struct {
         
         if (ball && ball->position.x != 0) {
             [self drawTrajectoryLineForBall:ball 
-                                withPower:customPower 
-                             showBounce:YES];
+                                  withPower:customPower 
+                                 showBounce:YES];
         }
     }
 }
 
 %end
 
-// 3. Hook لتفعيل عرض خطوط المسارات لجميع الكرات
+// 4. Hook لتفعيل عرض خطوط المسارات لجميع الكرات
 %hook GuidelineManager
 
 - (BOOL)shouldDrawExtendedLines {
