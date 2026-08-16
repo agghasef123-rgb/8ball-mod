@@ -49,7 +49,9 @@ jobs:
           
           cp "$DYLIB_PATH" "$APP_DIR/"
           
-          EXECUTABLE=$(defaults read "$APP_DIR/Info.plist" CFBundleExecutable)
+          plutil -convert xml1 "$APP_DIR/Info.plist"
+          EXECUTABLE=$(plutil -extract CFBundleExecutable raw "$APP_DIR/Info.plist")
+          
           insert_dylib --inplace --all-yes "@executable_path/$DYLIB_NAME" "$APP_DIR/$EXECUTABLE"
           
           mkdir -p output
