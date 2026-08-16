@@ -11,15 +11,9 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Install Dependencies & Build insert_dylib
+      - name: Install Dependencies
         run: |
-          brew install dpkg ldid
-          git clone https://github.com/tytydr/insert_dylib.git
-          cd insert_dylib
-          clang -O2 -o insert_dylib insert_dylib/main.c
-          sudo mv insert_dylib /usr/local/bin/
-          cd ..
-          rm -rf insert_dylib
+          brew install dpkg ldid insert_dylib
 
       - name: Download IPA
         run: |
