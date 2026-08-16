@@ -11,15 +11,13 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Install Dependencies & Azule
+      - name: Install Dependencies & insert_dylib
         run: |
           brew install dpkg ldid
-          curl -LO https://raw.githubusercontent.com/Al423/Azule/main/azule
-          if grep -q "404" azule; then
-            curl -LO https://raw.githubusercontent.com/Al423/Azule/master/azule
-          fi
-          chmod +x azule
-          sudo mv azule /usr/local/bin/azule
+          git clone https://github.com/tytydr/insert_dylib.git
+          cd insert_dylib
+          xcodebuild
+          sudo cp build/Release/insert_dylib /usr/local/bin/
 
       - name: Download IPA
         run: |
@@ -40,8 +38,20 @@ jobs:
       - name: Inject Dylib into IPA
         run: |
           DYLIB_PATH=$(find .theos/obj -name "*.dylib" | head -n 1)
+          DYLIB_NAME=$(basename "$DYLIB_PATH")
+          
+          unzip -q app.ipa -d temp_ipa
+          APP_DIR=$(find temp_ipa/Payload -maxdepth 1 -name "*.app")
+          
+          cp "$DYLIB_PATH" "$APP_DIR/"
+          
+          EXECUTABLE=$(defaults read "$APP_DIR/Info.plist" CFBundleExecutable)
+          insert_dylib --inplace --all-yes "@executable_path/$DYLIB_NAME" "$APP_DIR/$EXECUTABLE"
+          
           mkdir -p output
-          azule -i app.ipa -o output -f "$DYLIB_PATH" -n 8BallPool-Modded
+          cd temp_ipa
+          zip -qr ../output/8BallPool-Modded.ipa Payload
+          cd ..
 
       - name: Upload Modded IPA
         uses: actions/upload-artifact@v4
