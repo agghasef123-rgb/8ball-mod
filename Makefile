@@ -9,4 +9,4 @@ TWEAK_NAME = 8BallMod
 8BallMod_CFLAGS = -fobjc-arc
 8BallMod_FRAMEWORKS = UIKit CoreGraphics
 
-include $(THEOS_MAKEPATH)/tweak.mk
+include $(THEOS)/makefiles/tweak.mk
