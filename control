@@ -1,0 +1,9 @@
+Package: com.yourname.8ballmod
+Name: 8BallMod
+Depends: mobilesubstrate
+Version: 0.0.1
+Architecture: iphoneos-arm
+Description: Custom trajectory line mod for 8 Ball Pool
+Maintainer: YourName
+Author: YourName
+Section: Tweaks
