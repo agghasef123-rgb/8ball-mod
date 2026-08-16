@@ -1,0 +1,27 @@
+name: Build and Inject dylib
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Theos
+        run: |
+          git clone --recursive https://github.com/theos/theos.git ~/theos
+
+      - name: Build Dylib
+        run: |
+          export THEOS=~/theos
+          make clean package FinalPackage=1
+
+      - name: Upload Dylib Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: 8BallMod-Dylib
+          path: packages/*.deb
